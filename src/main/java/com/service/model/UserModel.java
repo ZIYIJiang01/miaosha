@@ -1,14 +1,25 @@
 package com.service.model;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class UserModel {
     private Integer id;
+    @NotBlank(message="username can't be empty")
     private String name;
+    @NotNull(message="gender can't be empty")
     private Integer gender;
+    @NotNull(message="age can't be empty")
+    @Min(value=0, message="age must larger than 0")
+    @Max(value=150, message="age must less than 150")
     private Integer age;
+    @NotBlank(message="telephone can't be empty")
     private String telephone;
     private String registerMode;
     private String thirdPartyId;
-
+    @NotBlank(message="password can't be empty")
     private String encryptPassword;
 
     public Integer getId() {
