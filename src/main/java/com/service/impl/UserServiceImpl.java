@@ -9,6 +9,8 @@ import com.error.BusinessException;
 import com.error.EmBusinessError;
 import com.service.UserService;
 import com.service.model.UserModel;
+import com.validator.ValidationResult;
+import com.validator.ValidatorImpl;
 import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserPasswordDOMapper userPasswordDOMapper;
+
+    @Autowired
+    private ValidatorImpl validator;
+
     /**
      * get user model dataobject by calling userdo mapper and userpassworddo mapper,
      * */
@@ -44,11 +50,17 @@ public class UserServiceImpl implements UserService {
         if(userModel == null){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
-        if(StringUtils.isEmpty(userModel.getName())
-                ||userModel.getGender()==null||userModel.getAge()==null
-                ||StringUtils.isEmpty(userModel.getTelephone())){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+//        if(StringUtils.isEmpty(userModel.getName())
+//                ||userModel.getGender()==null||userModel.getAge()==null
+//                ||StringUtils.isEmpty(userModel.getTelephone())){
+//            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+//        }
+
+        ValidationResult result = validator.validate(userModel);
+        if(result.isHasErrors()){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,result.getErrMsg());
         }
+
         UserDO userDO = convertFromModel(userModel);
         try{
             userDOMapper.insertSelective(userDO);//use insertSelective means if there's no data in parameter then use database default
