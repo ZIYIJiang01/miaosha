@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="bootstrap.min.css" rel="stylesheet"  type="text/css"/>
+    <link href="components.css" rel="stylesheet"  type="text/css"/>
+    <link href="login.css" rel="stylesheet"  type="text/css"/>
+
+    <!-- Correctly referencing the jQuery library -->
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        function getParam(paramName) {
+            var paramValue = "";
+            var isFound = false;
+
+            if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) {
+                var arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&");
+                var i = 0;
+                while (i < arrSource.length && !isFound) {
+                    if (arrSource[i].indexOf("=") > 0) {
+                        if (arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase()) {
+                            paramValue = arrSource[i].split("=")[1];
+                            isFound = true;
+                        }
+                    }
+                    i++;
+                }
+            }
+            return paramValue;
+        }
+
+        var g_itemVO = {};
+        function reloadDom(){
+            $("#title").text(g_itemVO.title);
+            $("#description").text(g_itemVO.description);
+            $("#stock").text(g_itemVO.stock);
+            $("#price").text(g_itemVO.price);
+            $("#imgUtl").attr("src", g_itemVO.imgUrl);
+            $("#sales").text(g_itemVO.sales);
+        }
+
+        jQuery(document).ready(function($) {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:8080/item/get",
+                    data: {
+                        "id": getParam("id")
+                    },
+                    xhrFields:{withCredentials:true},
+                    success: function(data) {
+                        if (data.status == "success") {
+                            g_itemVO = data.data
+                            reloadDom();
+                        } else {
+                            alert("get information  failed, because: " + data.data.errMsg);
+                        }
+                    },
+                    error: function(data) {
+                        alert("get information  failed, because: " + data.responseText);
+                    }
+                });
+            });
+
+    </script>
+</head>
+<body class="login">
+<div class="content">
+    <h3 class="form-title">Item Detail</h3>
+    <div class="form-group">
+        <label class="control-label">Item Title</label>
+        <div>
+            <label class="control-label" id="title" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Item Description</label>
+        <div>
+            <label class="control-label"  id="description" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Item Price</label>
+        <div>
+            <label class="control-label"  id="price" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Picture</label>
+        <div>
+            <img style="width:200px; height:auto" id="imgUtl"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Stock</label>
+        <div>
+            <label class="control-label"  id="stock" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Sales</label>
+        <div>
+            <label class="control-label"  id="sales" />
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.controller;
 
 import com.controller.viewobject.ItemVO;
 import com.controller.viewobject.UserVO;
+import com.dataobject.ItemStockDO;
 import com.error.BusinessException;
 import com.response.CommonReturnType;
 import com.service.ItemService;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller("item")
 @RequestMapping("/item")
@@ -44,7 +47,25 @@ public class ItemController extends BaseController{
         return CommonReturnType.create(null);
     }
 
-    @RequestMapping(value="/get", method= {RequestMethod.GET}, consumes={CONTENT_TYPE_FORMED})
+    /**
+     * browse item list
+     * */
+    @RequestMapping(value="/list", method= {RequestMethod.GET})
+    @ResponseBody
+    public CommonReturnType listItem(){
+        List<ItemModel> itemModelList = itemService.listItem();
+        List<ItemVO> itemVOList =  itemModelList.stream().map(itemModel -> {
+            ItemVO itemVO = this.convertFromModel(itemModel);
+            return itemVO;
+        }).collect(Collectors.toList());
+        return CommonReturnType.create(itemVOList);
+    }
+
+
+    /**
+     * get item detail
+     * */
+    @RequestMapping(value="/get", method= {RequestMethod.GET})
     @ResponseBody
     public CommonReturnType getItem(@RequestParam(name="id")Integer id){
         ItemModel itemModel = itemService.getItemById(id);
