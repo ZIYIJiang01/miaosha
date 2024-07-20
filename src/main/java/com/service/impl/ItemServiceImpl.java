@@ -17,8 +17,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.stream.Collectors;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ItemServiceImpl implements ItemService {
 
@@ -51,8 +54,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemModel> listItem() {
-        return List.of();
+        List<ItemDO> itemDOList = itemDOMapper.listItem();
+        List<ItemModel> itemModelList =  itemDOList.stream().map(itemDO -> {
+                    ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
+                    ItemModel itemModel = this.convertFromDataObject(itemDO, itemStockDO);
+                    return itemModel;
+                }).collect(Collectors.toList());
+        return itemModelList;
     }
+
 
     @Override
     public ItemModel getItemById(Integer id) {

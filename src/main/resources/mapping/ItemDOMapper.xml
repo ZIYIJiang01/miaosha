@@ -154,4 +154,12 @@
       img_url = #{imgUrl,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="listItem" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List"/>
+    from t_item
+    order by sales DESC;
+  </select>
+
 </mapper>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="bootstrap.min.css" rel="stylesheet"  type="text/css"/>
+        <link href="components.css" rel="stylesheet"  type="text/css"/>
+        <link href="login.css" rel="stylesheet"  type="text/css"/>
+       
+        <!-- Correctly referencing the jQuery library -->
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript">
+<!--            define global item list array-->
+            var g_itemList =[];
+
+            jQuery(document).ready(function($) {
+                    $.ajax({
+                        type: "GET",
+                        url: "http://localhost:8080/item/list",
+                        xhrFields:{withCredentials:true},
+                        success: function(data) {
+                            if (data.status == "success") {
+                                g_itemList = data.data;
+                                reloadDom();
+                            } else {
+                                alert("get items information success, because: " + data.data.errMsg);
+                            }
+                        },
+                        error: function(data) {
+                            alert("get items information failed, because: " + data.responseText);
+                        }
+                    });
+            });
+            function reloadDom(){
+                for (var i =0; i< g_itemList.length; i++){
+                    var item0 = g_itemList[i];
+                        var dom = "<tr data-id='"+ item0.id+"' id='itemDetail"+item0.id +"'><td>" + item0.title+"</td><td><img style='width:100px; height:auto;' src='"+item0.imgUrl+"'/></td><td>"+
+                            item0.description+"</td><td>"+item0.price+"</td><td>"+item0.stock+"</td><td>"+item0.sales+"</td></tr>";
+                    $("#container").append($(dom));
+                    $("#itemDetail" + item0.id).on("click",function(e){
+                        window.location.href="getItem.html?id="+ $(this).data("id");
+                    });
+                }
+
+            }
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <h3 class="form-title">List of items</h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>item title</th>
+                            <th>item pic</th>
+                            <th>item description</th>
+                            <th>item price</th>
+                            <th>item stock</th>
+                            <th>item sales</th>
+                        </tr>
+                    </thead>
+                    <tbody id="container">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
