@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.controller.viewobject.UserVO;
 import com.error.BusinessException;
 import com.error.CommonError;
@@ -34,6 +35,26 @@ public class UserController extends BaseController{
 
     @Autowired
     private HttpServletRequest httpServletRequest;
+
+    /**
+     * user login
+     * */
+    @RequestMapping(value="/login", method= {RequestMethod.POST}, consumes={CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name="telephone")String telephone,
+                                  @RequestParam(name="password")String password) throws UnsupportedEncodingException, NoSuchAlgorithmException, BusinessException {
+//        check
+        if(org.apache.commons.lang3.StringUtils.isEmpty(telephone) || StringUtils.isEmpty(password)) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+//           validate user log in
+        UserModel userModel = userService.validateLogin(telephone, this.EncodeByMD5(password));
+//        add login certificate add in user log in successful session
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN",true);
+        this.httpServletRequest.getSession().setAttribute("LOGIN_USER",userModel);
+        return CommonReturnType.create(null);
+    }
+
 
     /**
      * user register

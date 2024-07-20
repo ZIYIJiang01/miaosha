@@ -6,8 +6,8 @@ public enum EmBusinessError implements CommonError{
     UNKNOWN_ERROR(10002,"UNKNOWN ERROR"),
 
     //2000 stands for user information relevant error
-    USER_NOT_EXIST(20001,"USER DOES NOT EXIST")
-
+    USER_NOT_EXIST(20001,"USER DOES NOT EXIST"),
+    USER_LOGIN_FAIL(20002,"USER PHONE OR PASSWORD NOT CORRECT")
     ;
     private int errCode;
     private String errMsg;
