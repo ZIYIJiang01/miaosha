@@ -63,7 +63,23 @@ public class UserServiceImpl implements UserService {
         return;
     }
 
-//    convert to data object, because we need to transfer its information to database
+    @Override
+    public UserModel validateLogin(String telephone, String encryptPassword) throws BusinessException {
+//        from telephone get user information
+        UserDO userDO = userDOMapper.selectByTelephone(telephone);
+        if(userDO==null){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
+        UserModel userModel = convertFromDataObject(userDO,userPasswordDO);
+//        compare user encrypt password matched with parameter password
+        if(!StringUtils.equals(encryptPassword,userModel.getEncryptPassword())){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        return userModel;
+    }
+
+    //    convert to data object, because we need to transfer its information to database
     private UserDO convertFromModel(UserModel userModel){
         if (userModel == null) {
             return null;

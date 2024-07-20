@@ -41,6 +41,8 @@ public interface UserDOMapper {
      *
      * @mbg.generated Fri Jul 19 22:29:12 IST 2024
      */
+    UserDO selectByTelephone(String telephone);
+
     int updateByPrimaryKeySelective(UserDO row);
 
     /**
