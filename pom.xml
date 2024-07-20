@@ -101,11 +101,6 @@
       <artifactId>javax.el</artifactId>
       <version>3.0.0</version>
     </dependency>
-    <dependency>
-      <groupId>com</groupId>
-      <artifactId>project-miaosha</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
 
   </dependencies>
 
@@ -153,7 +148,7 @@
           <!-- Allow to move the generated file -->
           <!-- Allow to auto overwrite file -->
           <verbose>true</verbose>
-          <overwrite>true</overwrite>
+          <overwrite>false</overwrite>
           <configurationFile>src/main/resources/mybatis-generator.xml</configurationFile>
         </configuration>
       </plugin>
