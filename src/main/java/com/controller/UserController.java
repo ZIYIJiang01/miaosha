@@ -26,7 +26,7 @@ import java.util.Random;
 
 @Controller("user")
 @RequestMapping("/user")
-@CrossOrigin
+@CrossOrigin(origins = "http:localhost:8080", allowCredentials = "true", allowedHeaders = "*")
 public class UserController extends BaseController{
 
     @Autowired

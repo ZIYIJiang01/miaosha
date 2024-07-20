@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link href="bootstrap.min.css" rel="stylesheet"  type="text/css"/>
+        <link href="components.css" rel="stylesheet"  type="text/css"/>
+        <link href="login.css" rel="stylesheet"  type="text/css"/>
+       
+        <!-- Correctly referencing the jQuery library -->
+        <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                $("#register").on("click", function(event) {
+
+                    var telephone = $("#telephone").val();
+                    var password =$("#password").val();
+                    var age = $("#age").val();
+                    var gender = $("#gender").val();
+                    var name = $("#name").val();
+                    var otpCode =$("#otpCode").val();
+                    if (telephone == null || telephone == "") {
+                        alert("Phone number cannot be empty");
+                        return false;
+                    }
+                    if (password == null || password == "") {
+                        alert("password cannot be empty");
+                        return false;
+                    }
+                    if (age == null || age == "") {
+                        alert("age cannot be empty");
+                        return false;
+                    }
+                    if (gender == null || gender == "") {
+                        alert("gender cannot be empty");
+                        return false;
+                    }
+                    if (name == null || name == "") {
+                        alert("name cannot be empty");
+                        return false;
+                    }
+                    if (otpCode == null || otpCode == "") {
+                        alert("otpCode cannot be empty");
+                        return false;
+                    }
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/x-www-form-urlencoded",
+                        url: "http://localhost:8080/user/register",
+                        data: {
+                            "telephone": telephone,
+                            "password":password,
+                            "age":age,
+                            "gender":gender,
+                            "otpCode":otpCode,
+                            "name":name
+
+                        },
+                        xhrFields:{withCredentials:true},
+                        success: function(data) {
+                            if (data.status == "success") {
+                                alert("register success");
+                            } else {
+                                alert("register failed, because: " + data.data.errMsg);
+                            }
+                        },
+                        error: function(data) {
+                            alert("register failed, because: " + data.responseText);
+                        }
+                    });
+                });
+            });
+        </script>
+    </head>
+    <body class="login">
+        <div class="content">
+            <h3 class="form-title">User Register</h3>
+            <div class="form-group">
+                <label class="control-label">Phone Number</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="Phone number" name="telephone" id="telephone" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Authentication Code</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="Authentication Code" name="otpCode" id="otpCode" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Username</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="Username" name="name" id="name" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Gender</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="Gender" name="gender" id="gender" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Age</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="Age" name="age" id="age" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Password</label>
+                <div>
+                    <input class="form-control" type="text" placeholder="Password" name="password" id="password" />
+                </div>
+            </div>
+            <div class="form-action">
+                <button class="btn blue" id="register" type="submit">
+                    Register
+                </button>
+            </div>
+        </div>
+    </body>
+</html>
