@@ -9,7 +9,9 @@ import com.dataobject.UserPasswordDO;
 import com.error.BusinessException;
 import com.error.EmBusinessError;
 import com.service.ItemService;
+import com.service.PromoService;
 import com.service.model.ItemModel;
+import com.service.model.PromoModel;
 import com.service.model.UserModel;
 import com.validator.ValidationResult;
 import com.validator.ValidatorImpl;
@@ -31,6 +33,8 @@ public class ItemServiceImpl implements ItemService {
     private ItemDOMapper itemDOMapper;
     @Autowired
     private ItemStockDOMapper itemStockDOMapper;
+    @Autowired
+    private PromoService promoService;
 
     @Override
     @Transactional
@@ -72,6 +76,12 @@ public class ItemServiceImpl implements ItemService {
         }
         ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
         ItemModel itemModel = convertFromDataObject(itemDO, itemStockDO);
+
+//        get item promotion detail
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if(promoModel != null && promoModel.getStatus().intValue() != 3){
+            itemModel.setPromoModel(promoModel);
+        }
         return itemModel;
     }
 

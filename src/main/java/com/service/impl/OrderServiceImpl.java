@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderModel createOrder(Integer userId, Integer itemId, Integer amount) throws BusinessException {
+    public OrderModel createOrder(Integer userId, Integer itemId, Integer promoId, Integer amount) throws BusinessException {
 //        check if valid to order: item exist, user status legal, order amount is correct
         ItemModel itemModel = itemService.getItemById(itemId);
         if(itemModel == null){
@@ -54,6 +54,17 @@ public class OrderServiceImpl implements OrderService {
         if(amount <= 0 || amount >99){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "amount does not correct");
         }
+//        check promo info
+        if(promoId != null){
+//            this promotion suitable for this item?
+            if(promoId.intValue()!= itemModel.getPromoModel().getId()){
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion information does not correct");
+//            promotion is ongoing?
+            }else if(itemModel.getPromoModel().getStatus().intValue() != 2){
+                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion does not start");
+            }
+        }
+
 //        if order correct, stock decrement (order lock) (not after pay
         boolean result = itemService.decreaseStock(itemId, amount);
         if(!result){
@@ -64,9 +75,13 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setUserId(userId);
         orderModel.setItemId(itemId);
         orderModel.setAmount(amount);
-        BigDecimal price = itemModel.getPrice();
-        orderModel.setItemPrice(price);
-        orderModel.setOrderPrice(price.multiply(new BigDecimal(amount)));
+        if(promoId != null){
+            orderModel.setItemPrice(itemModel.getPromoModel().getPromoItemPrice());
+        }else {
+            orderModel.setItemPrice(itemModel.getPrice());
+        }
+        orderModel.setPromoId(promoId);
+        orderModel.setOrderPrice(orderModel.getItemPrice().multiply(new BigDecimal(amount)));
 
 //        create order id
         orderModel.setId(generateOrderNo());

@@ -3,13 +3,25 @@ package com.service.model;
 import java.math.BigDecimal;
 
 public class OrderModel {
-//    business order id will have a representative meaning
+    //    if not null, represents buy with a promotion price
+    private Integer promoId;
+    //    business order id will have a representative meaning
     private String id;
     private Integer userId;
     private Integer itemId;
+    //    if promo id not null, represents buy with a promotion price
     private BigDecimal itemPrice;
     private Integer amount;
+    //    if promo id not null, represents buy with a promotion price
     private BigDecimal orderPrice;
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
 
     public BigDecimal getOrderPrice() {
         return orderPrice;
