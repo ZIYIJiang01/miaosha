@@ -40,7 +40,33 @@
         }
 
         jQuery(document).ready(function($) {
+            $("#createorder").on("click", function() {
                 $.ajax({
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    url: "http://localhost:8080/order/createorder",
+                    data: {
+                        "itemId": g_itemVO.id,
+                        "amount": 1,
+                    },
+                    xhrFields: {withCredentials: true},
+                    success: function(data) {
+                        if (data.status == "success") {
+                            alert("order success");
+                            window.location.reload();
+                        } else {
+                            alert("order failed, because: " + data.data.errMsg);
+                            if(data.data.errCode == 20003){
+                                window.location.href="login.html";
+                            }
+                        }
+                    },
+                    error: function(data) {
+                        alert("order failed, because: " + data.responseText);
+                    }
+                });
+            });
+            $.ajax({
                     type: "GET",
                     url: "http://localhost:8080/item/get",
                     data: {
@@ -52,11 +78,11 @@
                             g_itemVO = data.data
                             reloadDom();
                         } else {
-                            alert("get information  failed, because: " + data.data.errMsg);
+                            alert("get information failed, because: " + data.data.errMsg);
                         }
                     },
                     error: function(data) {
-                        alert("get information  failed, because: " + data.responseText);
+                        alert("get information failed, because: " + data.responseText);
                     }
                 });
             });
@@ -102,7 +128,11 @@
             <label class="control-label"  id="sales" />
         </div>
     </div>
-
+    <div class="form-action">
+        <button class="btn blue" id="createorder" type="submit">
+            Order
+        </button>
+    </div>
 </div>
 </body>
 </html>

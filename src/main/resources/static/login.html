@@ -39,6 +39,7 @@
                         success: function(data) {
                             if (data.status == "success") {
                                 alert("login success");
+                                window.location.href="listitem.html";
                             } else {
                                 alert("login failed, because: " + data.data.errMsg);
                             }
