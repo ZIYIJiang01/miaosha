@@ -16,6 +16,16 @@ public class ItemModel {
     private Integer stock;
     @NotBlank(message="item description can't be empty")
     private String description;
+//  aggregate model, if promoModel != null, represents it has promotion still not over(not happen and ongoing
+    private PromoModel promoModel;
+
+    public PromoModel getPromoModel() {
+        return promoModel;
+    }
+
+    public void setPromoModel(PromoModel promoModel) {
+        this.promoModel = promoModel;
+    }
 
     private Integer sales;
 //    item description img

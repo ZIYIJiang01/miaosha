@@ -1,9 +1,12 @@
 package com.controller.viewobject;
 
+import org.joda.time.DateTime;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+
 
 public class ItemVO {
     private Integer id;
@@ -20,6 +23,47 @@ public class ItemVO {
     //    item description img
 
     private String imgUrl;
+
+//    record whether item is in promotion, and its status: 0-no promotion 1-not happen 2- ongoing
+    private Integer promoStatus;
+
+    private BigDecimal promoPrice;
+//    promotion id
+    private Integer promoId;
+
+    private String startDate;
+
+    public Integer getPromoStatus() {
+        return promoStatus;
+    }
+
+    public void setPromoStatus(Integer promoStatus) {
+        this.promoStatus = promoStatus;
+    }
+
+    public BigDecimal getPromoPrice() {
+        return promoPrice;
+    }
+
+    public void setPromoPrice(BigDecimal promoPrice) {
+        this.promoPrice = promoPrice;
+    }
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 
     public Integer getId() {
         return id;
