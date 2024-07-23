@@ -2,9 +2,10 @@ package com.service.model;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class PromoModel {
+public class PromoModel implements Serializable {
 
 //    promotion status: 1-not start 2-ongoing 3-over
     private Integer status;
