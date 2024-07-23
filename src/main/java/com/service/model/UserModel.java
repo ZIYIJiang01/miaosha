@@ -5,7 +5,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class UserModel {
+public class UserModel implements java.io.Serializable {
     private Integer id;
     @NotBlank(message="username can't be empty")
     private String name;

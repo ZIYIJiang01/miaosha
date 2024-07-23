@@ -10,8 +10,10 @@ import com.service.UserService;
 import com.service.model.UserModel;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.security.MD5Encoder;
+import org.joda.time.Hours;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 @Controller("user")
@@ -35,6 +35,9 @@ public class UserController extends BaseController{
 
     @Autowired
     private HttpServletRequest httpServletRequest;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * user login
@@ -50,9 +53,18 @@ public class UserController extends BaseController{
 //           validate user log in
         UserModel userModel = userService.validateLogin(telephone, this.EncodeByMD5(password));
 //        add login certificate add in user log in successful session
-        this.httpServletRequest.getSession().setAttribute("IS_LOGIN",true);
-        this.httpServletRequest.getSession().setAttribute("LOGIN_USER",userModel);
-        return CommonReturnType.create(null);
+
+//        token  UUID->unique
+        String uuidToken = UUID.randomUUID().toString();
+
+//        build connection with uuid and login
+        redisTemplate.opsForValue().set(uuidToken, userModel);
+        redisTemplate.expire(uuidToken,1, TimeUnit.HOURS);
+
+//        this.httpServletRequest.getSession().setAttribute("IS_LOGIN",true);
+//        this.httpServletRequest.getSession().setAttribute("LOGIN_USER",userModel);
+
+        return CommonReturnType.create(uuidToken);
     }
 
 
