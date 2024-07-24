@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class ItemModel {
+public class ItemModel implements java.io.Serializable {
     private Integer id;
     @NotBlank(message ="item title can't be empty")
     private String title;

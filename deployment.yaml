@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-miaosha
+  labels:
+    app: project-miaosha
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: project-miaosha
+  template:
+    metadata:
+      labels:
+        app: project-miaosha
+    spec:
+      containers:
+        - name: project-miaosha
+          image: pajipiu/project-miaosha:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://database-1.cte0gy2as55j.us-east-1.rds.amazonaws.com:3306/miaosha"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "123456"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-miaosha-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: project-miaosha
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
