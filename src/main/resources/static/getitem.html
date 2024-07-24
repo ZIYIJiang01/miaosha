@@ -67,6 +67,45 @@
             }
         }
 
+        function  hasInit(){
+            var isInit = $("#isInit").val();
+            return isInit;
+        }
+
+        function setHasInit(){
+            $("#isInit").val("1");
+        }
+
+        function initView(){
+            var isInit = hasInit();
+            if(isInit == "1"){
+                return;
+            }
+            $.ajax({
+                type: "GET",
+                url: "http://"+g_host+"/item/get",
+                data: {
+                    "id": getParam("id")
+                },
+                xhrFields: { withCredentials: true },
+                success: function(data) {
+                    if (data.status === "success") {
+                        g_itemVO = data.data;
+                        console.log(g_itemVO.startDate); // Check the date format
+                        console.log(g_itemVO.promoItemPrice); // Check the promo price
+                        reloadDom();
+                        setInterval(updateCountdown, 1000); // Update countdown every second
+                        setHasInit();
+                    } else {
+                        alert("Get information failed, because: " + data.data.errMsg);
+                    }
+                },
+                error: function(data) {
+                    alert("Get information failed, because: " + data.responseText);
+                }
+            });
+        }
+
         jQuery(document).ready(function($) {
             $("#createorder").on("click", function() {
                 var token = window.localStorage["token"];
@@ -102,32 +141,12 @@
                 });
             });
 
-            $.ajax({
-                type: "GET",
-                url: "http://"+g_host+"/item/get",
-                data: {
-                    "id": getParam("id")
-                },
-                xhrFields: { withCredentials: true },
-                success: function(data) {
-                    if (data.status === "success") {
-                        g_itemVO = data.data;
-                        console.log(g_itemVO.startDate); // Check the date format
-                        console.log(g_itemVO.promoItemPrice); // Check the promo price
-                        reloadDom();
-                        setInterval(updateCountdown, 1000); // Update countdown every second
-                    } else {
-                        alert("Get information failed, because: " + data.data.errMsg);
-                    }
-                },
-                error: function(data) {
-                    alert("Get information failed, because: " + data.responseText);
-                }
-            });
+            initView();
         });
     </script>
 </head>
 <body class="login">
+<input type="hidden" id="isInit" value="0"/>
 <div class="content">
     <h3 class="form-title">Item Detail</h3>
     <div id="promoStartDateContainer" class="form-group">
