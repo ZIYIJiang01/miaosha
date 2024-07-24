@@ -6,6 +6,10 @@ import com.service.model.UserModel;
 public interface UserService {
 
     UserModel getUserById(Integer id);
+
+//    get user by cache
+    UserModel getUserByIdInCache(Integer id);
+
     void register(UserModel userModel) throws BusinessException;
     /**
      * telephone: telephone user registered

@@ -7,6 +7,7 @@ import com.error.BusinessException;
 import com.response.CommonReturnType;
 import com.service.CacheService;
 import com.service.ItemService;
+import com.service.PromoService;
 import com.service.UserService;
 import com.service.model.ItemModel;
 import com.service.model.UserModel;
@@ -36,6 +37,9 @@ public class ItemController extends BaseController{
 
     @Autowired
     private CacheService cacheService;
+
+    @Autowired
+    private PromoService promoService;
 
     /**
      * create item
@@ -73,6 +77,12 @@ public class ItemController extends BaseController{
         return CommonReturnType.create(itemVOList);
     }
 
+    @RequestMapping(value="/publishpromo", method= {RequestMethod.GET})
+    @ResponseBody
+    public CommonReturnType publishPromo(@RequestParam(name="id")Integer id){
+        promoService.publishPromo(id);
+        return CommonReturnType.create(null);
+    }
 
     /**
      * get item detail
