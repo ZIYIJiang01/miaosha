@@ -11,7 +11,11 @@ public enum EmBusinessError implements CommonError{
     USER_NOT_LOGIN(20003,"USER DOES NOT LOG IN"),
 
 //    3000 stands for transaction information error
-    STOCK_NOT_ENOUGH(30001,"STOCK IS NOT ENOUGH")
+    STOCK_NOT_ENOUGH(30001,"STOCK IS NOT ENOUGH"),
+    MQ_SEND_FAIL(30002,"MQ SEND FAIL"),
+    RATE_LIMIT(30003,"RATE LIMIT FAIL")
+
+
     ;
     private int errCode;
     private String errMsg;

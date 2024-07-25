@@ -1,9 +1,12 @@
 package com.service.impl;
 
+import com.dao.ItemStockDOMapper;
 import com.dao.OrderDOMapper;
 import com.dao.SequenceDOMapper;
+import com.dao.StockLogDOMapper;
 import com.dataobject.OrderDO;
 import com.dataobject.SequenceDO;
+import com.dataobject.StockLogDO;
 import com.error.BusinessException;
 import com.error.EmBusinessError;
 import com.service.ItemService;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,32 +43,41 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private SequenceDOMapper sequenceDOMapper;
+    @Autowired
+    private ItemStockDOMapper itemStockDOMapper;
+    @Autowired
+    private StockLogDOMapper stockLogDOMapper;
 
     @Override
     @Transactional
-    public OrderModel createOrder(Integer userId, Integer itemId, Integer promoId, Integer amount) throws BusinessException {
+    public OrderModel createOrder(Integer userId, Integer itemId, Integer promoId, Integer amount, String stockLogId) throws BusinessException {
 //        check if valid to order: item exist, user status legal, order amount is correct
-        ItemModel itemModel = itemService.getItemById(itemId);
+//        ItemModel itemModel = itemService.getItemById(itemId);
+//
+        ItemModel itemModel = itemService.getItemByIdInCache(itemId);
+
         if(itemModel == null){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "item does not exist");
         }
-        UserModel userModel = userService.getUserById(userId);
-        if(userModel == null){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "user does not exist");
-        }
+////        UserModel userModel = userService.getUserById(userId);
+//        UserModel userModel = userService.getUserByIdInCache(userId);
+//
+//        if(userModel == null){
+//            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "user does not exist");
+//        }
         if(amount <= 0 || amount >99){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "amount does not correct");
         }
-//        check promo info
-        if(promoId != null){
-//            this promotion suitable for this item?
-            if(promoId.intValue()!= itemModel.getPromoModel().getId()){
-                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion information does not correct");
-//            promotion is ongoing?
-            }else if(itemModel.getPromoModel().getStatus().intValue() != 2){
-                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion does not start");
-            }
-        }
+////        check promo info
+//        if(promoId != null){
+////            this promotion suitable for this item?
+//            if(promoId.intValue()!= itemModel.getPromoModel().getId()){
+//                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion information does not correct");
+////            promotion is ongoing?
+//            }else if(itemModel.getPromoModel().getStatus().intValue() != 2){
+//                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion does not start");
+//            }
+//        }
 
 //        if order correct, stock decrement (order lock) (not after pay
         boolean result = itemService.decreaseStock(itemId, amount);
@@ -89,6 +103,27 @@ public class OrderServiceImpl implements OrderService {
         orderDOMapper.insertSelective(orderDO);
 //       add sales
         itemService.increaseSales(itemId,amount);
+
+
+//        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+//            @Override
+//            public void afterCommit() {
+////        asynchronize stock
+//                boolean mqResult = itemService.asyncDecreaseStock(itemId,amount);
+////                if(!mqResult){
+////                    itemService.increaseStock(itemId,amount);
+////                    throw new BusinessException(EmBusinessError.MQ_SEND_FAIL);
+////                }
+//            }
+//        });
+
+//      set stock log to success
+        StockLogDO stockLogDO = stockLogDOMapper.selectByPrimaryKey(stockLogId);
+        if(stockLogDO == null){
+            throw new BusinessException(EmBusinessError.UNKNOWN_ERROR);
+        }
+        stockLogDO.setStatus(2);
+        stockLogDOMapper.updateByPrimaryKeySelective(stockLogDO);
         //        return to front end
         return orderModel;
     }

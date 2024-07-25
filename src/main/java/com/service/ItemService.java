@@ -13,8 +13,21 @@ public interface ItemService {
     List<ItemModel> listItem();
 //    item detail browse
     ItemModel getItemById(Integer id);
+
+//    verify item and promo model is valid
+    ItemModel getItemByIdInCache(Integer id);
+
 //    stock decrease
     boolean decreaseStock(Integer itemId, Integer amount);
-//    sales increase
+
+    boolean increaseStock(Integer itemId, Integer amount);
+
+
+    //    asynchronize stock
+    boolean asyncDecreaseStock(Integer itemId, Integer amount);
+
+    //    sales increase
     void increaseSales(Integer itemId, Integer amount);
+
+    String initStockLog(Integer itemId, Integer amount);
 }

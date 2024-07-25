@@ -126,6 +126,13 @@
       <version>33.2.1-jre</version>
     </dependency>
 
+<!--    rocketmq-->
+    <dependency>
+      <groupId>org.apache.rocketmq</groupId>
+      <artifactId>rocketmq-client</artifactId>
+      <version>5.2.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>
