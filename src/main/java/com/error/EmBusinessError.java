@@ -12,7 +12,8 @@ public enum EmBusinessError implements CommonError{
 
 //    3000 stands for transaction information error
     STOCK_NOT_ENOUGH(30001,"STOCK IS NOT ENOUGH"),
-    MQ_SEND_FAIL(30002,"MQ SEND FAIL")
+    MQ_SEND_FAIL(30002,"MQ SEND FAIL"),
+    RATE_LIMIT(30003,"RATE LIMIT FAIL")
 
 
     ;

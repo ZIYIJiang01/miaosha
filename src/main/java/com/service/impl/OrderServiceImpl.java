@@ -53,31 +53,31 @@ public class OrderServiceImpl implements OrderService {
     public OrderModel createOrder(Integer userId, Integer itemId, Integer promoId, Integer amount, String stockLogId) throws BusinessException {
 //        check if valid to order: item exist, user status legal, order amount is correct
 //        ItemModel itemModel = itemService.getItemById(itemId);
-
+//
         ItemModel itemModel = itemService.getItemByIdInCache(itemId);
 
         if(itemModel == null){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "item does not exist");
         }
-//        UserModel userModel = userService.getUserById(userId);
-        UserModel userModel = userService.getUserByIdInCache(userId);
-
-        if(userModel == null){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "user does not exist");
-        }
+////        UserModel userModel = userService.getUserById(userId);
+//        UserModel userModel = userService.getUserByIdInCache(userId);
+//
+//        if(userModel == null){
+//            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "user does not exist");
+//        }
         if(amount <= 0 || amount >99){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "amount does not correct");
         }
-//        check promo info
-        if(promoId != null){
-//            this promotion suitable for this item?
-            if(promoId.intValue()!= itemModel.getPromoModel().getId()){
-                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion information does not correct");
-//            promotion is ongoing?
-            }else if(itemModel.getPromoModel().getStatus().intValue() != 2){
-                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion does not start");
-            }
-        }
+////        check promo info
+//        if(promoId != null){
+////            this promotion suitable for this item?
+//            if(promoId.intValue()!= itemModel.getPromoModel().getId()){
+//                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion information does not correct");
+////            promotion is ongoing?
+//            }else if(itemModel.getPromoModel().getStatus().intValue() != 2){
+//                throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"promotion does not start");
+//            }
+//        }
 
 //        if order correct, stock decrement (order lock) (not after pay
         boolean result = itemService.decreaseStock(itemId, amount);
